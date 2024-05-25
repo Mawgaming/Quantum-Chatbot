@@ -1,0 +1,23 @@
+from flask import Flask, request, jsonify
+from quill_logic import quill_process
+from paige_logic import paige_process
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return jsonify({"message": "Welcome to the Quantum Narration Manual!"})
+
+@app.route('/sendMessage', methods=["POST"])
+def receive_message():
+    data = request.get_json()
+    user_message = data["message"]
+    if "quill" in user_message.lower():
+        reply = quill_process(user_message)
+    else:
+        reply = paige_process(user_message)
+    return jsonify({"reply": reply})
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
